@@ -1,0 +1,23 @@
+﻿@{
+    Page.Title = "Layout Content page";
+    Layout = "~/_Layout.cshtml";
+    string name = "Crystal";
+}
+
+@section head
+{
+   <!-- put in a link to a custom .css file-->
+     }
+
+<div>
+    <p>this is the default context of the body and will
+    appear in the body tag.</p>
+</div>
+@section footer
+{
+    <p>&copy; CPSC1517, Nait Today's date is 
+    @DateTime.Today.ToLongDateString(). </p>}
+@section banner
+{
+    <h1>@name</h1>
+}
