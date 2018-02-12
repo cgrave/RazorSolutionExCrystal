@@ -1,0 +1,23 @@
+﻿ <!-- this is the layout page menu area-->
+<div class="navbar navbar-default navbar-fixed-top">
+    <!-- Brand title area at the start of the menu-->
+    <div class="navbar-header">
+        <a class="navbar-brand" style="font-size:x-large">
+            <strong>CPSC1517 Razor</strong>
+        </a>
+    </div>
+    <!-- menu root menuitems-->
+    <ul class="nav navbar-nav">
+        <!-- each menuitem is a li-->
+        <li><a href="@Href("~/index.cshtml")">Home</a></li>
+        <!-- creating a drop down sub menu-->
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Exercises <b class="caret"></b></a>
+            <!-- create the sub menu which is just another unordered list-->
+            <ul class="dropdown-menu">
+                <li><a href="@Href("~/Exercises/Exercise01.cshtml")">Exercise 01</a></li>
+                <li><a href="@Href("~/Exercises/Exercise02.cshtml")">Exercise 02</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>

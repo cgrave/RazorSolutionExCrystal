@@ -3,33 +3,16 @@
 <head>
     <title>@Page.Title</title>
     <!-- link to general .css-->
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <script src="~/Scripts/bootstrap.js"></script>
-    <script src="~/Scripts/jquery-3.3.1.js"></script>
     <!-- link to general .js-->
     @RenderSection("head", required: false)
 </head>
-    <body>
-        <div class="navbar navbar-default navbar-fixed-top">
-            <!-- Brand title area at the start of the menu-->
-            <div class="navbar-header">
-                <a class="navbar-brand" style="font-size:x-large">
-                    <strong>CPSC1517 Razor</strong>
-                </a>
-            </div>
-            <!-- menu root menuitems-->
-            <ul class="nav navbar-nav">
-                <!-- each menuitem is a li-->
-                <li><a href="@Href("~/Default.cshtml")">Home</a></li>
-                <li><a href="@Href("~/ContentPage.cshtml")">Basic Controls</a></li>
-                <li><a href="@Href("~/TextBox.cshtml")">TextBox</a></li>
-                <li><a href="@Href("~/RadioButtons.cshtml")">RadioButtons</a></li>
-                <li><a href="@Href("~/CheckBoxes.cshtml")">CheckBoxes</a></li>
-                <li><a href="@Href("~/DropDown.cshtml")">DropDown</a></li>
-            </ul>
-        </div>
-        @RenderSection("banner", required: true)
-        @RenderBody()
-        @RenderSection("Footer", required: false)
-    </body>
+<body>
+    @RenderPage("~/_Menu.cshtml")
+    @RenderSection("banner", required: true)
+    @RenderBody()
+    @RenderSection("Footer", required: false)
+</body>
 </html>
