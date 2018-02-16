@@ -1,0 +1,109 @@
+﻿@{
+	Page.Title = "DB Multi Record Query";
+	Layout = "~/_Layout.cshtml";
+
+
+	var db = Database.Open("ChinookDB");
+
+	var ArtistId = Request.Form["ArtistId"];
+
+	var partialstring = "\'%" + ArtistId + "%\'";
+
+	var querycommand = "SELECT ArtistId, Name "
+				+ "FROM Artists "
+				+ "WHERE Name like @0 "
+				+ "ORDER BY Name";
+
+
+	var selectresults = db.Query(querycommand, partialstring);
+
+
+
+}
+
+@section head
+{
+	<!-- put in a link to a custom .css file-->
+	<link href="~/Content/MyCSS.css" rel="stylesheet" />
+}
+<div>
+	@section banner
+{
+		<h1>ugh</h1>
+	}
+
+	@if (IsPost)
+	{
+
+		var artName = Request.Form["ArtistId"];
+		
+		if (artName.IsEmpty())
+		{
+			<p><span style="color:firebrick">You did not enter a artist. Try again.</span></p>
+		}
+		else
+		{
+			if (selectresults.Count() == 0) //cannot find an artist from the query command
+			{
+				<p><span style="color:firebrick">There are no products for the category. @artName</span></p>
+			}
+			else
+			{
+
+				//// redirects to another page Response.Redirect("WebQuery.cshtml?cid=" + ArtistId);
+				//var cid = Request.QueryString["cid"];
+
+				//if (string.IsNullOrEmpty(cid))
+				//{
+				//	Response.Redirect("Exercise02.cshtml");
+				//}
+				//var dab = Database.Open("ChinookDB");
+				////create a query to obtain the artist namess
+				////the query will return a single value
+				//var querycommand = "SELECT CategoryName FROM Categories "
+				//				+ "WHERE CategoryID = @0";
+
+
+				<p>EAT ME</p>
+			}
+		}
+
+	}
+
+	<form id="theForm" action="" method="post">
+		<div class="row">
+			<div class="col-md-3">
+				<label id="ArtistId">Enter Artist Name:&nbsp;</label><br />
+				<input id="ArtistId" name="ArtistId" value="@ArtistId" type="text"/><br />
+									   <br />
+				<button type="submit" name="formButton" value="submit"
+						class="btn btn-primary">
+					Fetch Artists
+				</button>
+			</div>
+			<div class="col-md-9">
+				<label id="AlbumId">Select Your Artist:&nbsp;</label><br />
+				<select style="height:25px;"name="AlbumId" id="AlbumId">
+					<option value="0">select ...</option>
+					@foreach (var item in selectresults)
+			{
+				<option value="@item[0]">@item.Name</option>
+	}
+				</select><br />
+				<br />
+				<button type="submit" name="formButton" value="submit"
+						class="btn btn-primary">
+					Fetch Albums
+				</button>
+			</div>
+		</div>
+	</form>
+
+
+	@section footer
+{
+		<p>
+			&copy; CPSC1517, Nait Today's date is
+			@DateTime.Today.ToLongDateString().
+		</p>}
+</div>
