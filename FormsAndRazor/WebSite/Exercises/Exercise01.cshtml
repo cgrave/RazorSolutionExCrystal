@@ -1,29 +1,88 @@
 ﻿@{
 	Page.Title = "Exercise01";
 	Layout = "~/_Layout.cshtml";
+	var formbutton = Request.Form["formButton"];
+	var formClear = Request.Form["formButtonClear"];
+	var customername = Request.Form["CustomerName"];
 }
 
 
+	@section PageTitle{
+		<br /><br />
+		<h2>Exercise01: Basic Form Processing</h2>
 
-@section banner
-{
-	<br /><br />
-	<h2>Exercise 01</h2>
+	}
 
-}
 
-<div>
-	<form id="EX01" method="post">
-		<div class="row">
-			<div class="col-md-3">
-				CustomerName:<input value="0"/>
-			</div>
-			<div class="col-md-9">
-				<label>Choose Your Meal</label>
-				<input value="2" />
-			</div>
+
+		<div>
+
+		@if (IsPost)
+		{
+			var foodchoice = Request.Form["FoodChoice"];
+			var custname = Request.Form["CustomerName"];
+			if (formbutton.Equals("Clear")) {
+
+				customername = " ";
+				foodchoice = "";
+
+			<p><span style="color:blue">
+			You have cleared this!</span></p>
+			}
+			else {
+				if (foodchoice.IsEmpty())
+				{
+				<p><span style="color:firebrick">Make sure your select something from the list.</span></p>
+				}
+				else if(custname.IsEmpty())
+				{
+				<p><span style="color:firebrick">Make sure you enter a name.</span></p>
+				}
+				else
+				{
+				char[] delimiter = { ',' };
+				<p>
+				@custname, Your meal choice is:
+				<ul>
+				@foreach (var item in foodchoice.Split(delimiter))
+				{
+				<li>@item</li>
+				}
+				</ul>
+
+				</p>
+				}
+			}
+
+			}
+
+			<form id="EX01" action="" method="post">
+				<div class="row">
+					<div class="col-md-3">
+						<label for="CustomerName">Enter Name:&nbsp;</label>
+						<input type="text" id="CustomerName" name="CustomerName" value="@customername" />
+
+					</div>
+					<div class="col-md-9">
+						<label for="FoodChoice">Pick:&nbsp;</label><br />
+						<input type="checkbox" id="FoodChoice" name="FoodChoice" value="Waffles" />&nbsp;Waffle<br />
+						<input type="checkbox" id="FoodChoice" name="FoodChoice" value="Pancakes" />&nbsp;Pancake<br />
+						<input type="checkbox" id="FoodChoice" name="FoodChoice" value="Omlette" />&nbsp;Omlete<br />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-3">
+						<button type="submit" name="formButton" value="submit" class="btn btn-primary">
+							Search
+						</button>
+						<button type="submit" name="formButton" value="Clear" class="btn btn-warning">
+							Clears
+						</button>
+						</div>
+				</div>
+
+			</form>
+
+
 		</div>
-	</form>
-
-
-</div>

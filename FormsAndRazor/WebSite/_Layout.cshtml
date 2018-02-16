@@ -1,18 +1,24 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>@Page.Title</title>
-    <!-- link to general .css-->
-    <script src="~/Scripts/jquery-3.2.1.js"></script>
-    <link href="~/Content/bootstrap.css" rel="stylesheet" />
-    <script src="~/Scripts/bootstrap.js"></script>
-    <!-- link to general .js-->
-    @RenderSection("head", required: false)
+	<title>@Page.Title</title>
+	<script src="~/Scripts/jquery-3.2.1.js"></script>
+	<link href="~/Content/bootstrap.css" rel="stylesheet" />
+	<script src="~/Scripts/bootstrap.js"></script>
+	@RenderSection("head", required: false)
 </head>
 <body>
-    @RenderPage("~/_Menu.cshtml")
-    @RenderSection("banner", required: true)
-    @RenderBody()
-    @RenderSection("Footer", required: false)
+	<!-- RenderPage brings the request file and replace the RenderPage-->
+	@RenderPage("~/_Menu.cshtml")
+	<br />
+	<div class="jumbotron">
+		@RenderSection("banner", required: false)
+		@RenderSection("pagetitle", required: false)
+	</div>
+	<div class="container-fluid">
+		@RenderBody()
+		<br /><hr />
+		@RenderSection("Footer", required: false)
+	</div>
 </body>
 </html>
