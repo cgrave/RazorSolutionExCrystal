@@ -46,10 +46,11 @@
 		{
 			querycommand = "SELECT Name "
 			+ "FROM Artists "
-			+ "WHERE Name like @0 ";
+			//+ "WHERE Name like @0 "; why doesnt this work??
+			+ "WHERE Name like " + partialstring;
 
 			//Execution: use Query()
-			var productresults = db.Query(querycommand, partialstring);
+			var productresults = db.Query(querycommand);
 
 			if (productresults.Count() == 0) //cannot find an artist from the query command
 			{
@@ -57,7 +58,7 @@
 			}
 			else
 			{
-				Response.Redirect("Exercise02_B.cshtml?cid=" + artName);
+				Response.Redirect("Exercise02_B.cshtml?cid=" + ArtistId);
 				<p>else</p>
 			}
 		}
