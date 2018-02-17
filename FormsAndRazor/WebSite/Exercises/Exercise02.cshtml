@@ -36,35 +36,29 @@
 	{
 
 		var artName = Request.Form["ArtistId"];
-		
+
+
 		if (artName.IsEmpty())
 		{
 			<p><span style="color:firebrick">You did not enter a artist. Try again.</span></p>
 		}
 		else
 		{
-			if (selectresults.Count() == 0) //cannot find an artist from the query command
+			querycommand = "SELECT Name "
+			+ "FROM Artists "
+			+ "WHERE Name like @0 ";
+
+			//Execution: use Query()
+			var productresults = db.Query(querycommand, partialstring);
+
+			if (productresults.Count() == 0) //cannot find an artist from the query command
 			{
-				<p><span style="color:firebrick">There are no products for the category. @artName</span></p>
+				<p><span style="color:firebrick">There are no artist named. @artName  </span></p>
 			}
 			else
 			{
-
-				//// redirects to another page Response.Redirect("WebQuery.cshtml?cid=" + ArtistId);
-				//var cid = Request.QueryString["cid"];
-
-				//if (string.IsNullOrEmpty(cid))
-				//{
-				//	Response.Redirect("Exercise02.cshtml");
-				//}
-				//var dab = Database.Open("ChinookDB");
-				////create a query to obtain the artist namess
-				////the query will return a single value
-				//var querycommand = "SELECT CategoryName FROM Categories "
-				//				+ "WHERE CategoryID = @0";
-
-
-				<p>EAT ME</p>
+				Response.Redirect("Exercise02_B.cshtml?cid=" + artName);
+				<p>else</p>
 			}
 		}
 
@@ -74,8 +68,8 @@
 		<div class="row">
 			<div class="col-md-3">
 				<label id="ArtistId">Enter Artist Name:&nbsp;</label><br />
-				<input id="ArtistId" name="ArtistId" value="@ArtistId" type="text"/><br />
-									   <br />
+				<input id="ArtistId" name="ArtistId" value="@ArtistId" type="text" /><br />
+				<br />
 				<button type="submit" name="formButton" value="submit"
 						class="btn btn-primary">
 					Fetch Artists
@@ -83,12 +77,12 @@
 			</div>
 			<div class="col-md-9">
 				<label id="AlbumId">Select Your Artist:&nbsp;</label><br />
-				<select style="height:25px;"name="AlbumId" id="AlbumId">
+				<select style="height:25px;" name="AlbumId" id="AlbumId">
 					<option value="0">select ...</option>
 					@foreach (var item in selectresults)
-			{
-				<option value="@item[0]">@item.Name</option>
-	}
+					{
+						<option value="@item[0]">@item.selectresults</option>
+					}
 				</select><br />
 				<br />
 				<button type="submit" name="formButton" value="submit"
