@@ -1,6 +1,6 @@
 ﻿@{
-	Page.Title = "Title goes here";
-	//Layout = "Your Layout Page goes here";
+	Page.Title = "Exercise 2 Database Query";
+	Layout = "~/_Layout.cshtml";
 	var cid = Request.QueryString["cid"];
 
 	if (string.IsNullOrEmpty(cid))
@@ -10,15 +10,11 @@
 	var db = Database.Open("ChinookDB");
 
 	var querycommand = "SELECT Name FROM Artists WHERE ArtistId = @0";
-	//execution
-	//QueryValue: returns a single value
-	var categoryname = db.Query(querycommand, cid);
+	var artistName = db.QueryValue(querycommand, cid).ToString(); // gets name
 
 	//using the categoryid passed to this page, retreive the
 	//     associated product data
-	querycommand = "SELECT AlbumId, Title, ReleaseYear, ReleaseLabel "
-					+ "FROM Albums "
-					+ "WHERE ArtistId = @0 "
+	querycommand = "SELECT AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE ArtistId = @0 "
 					+ "ORDER BY Title";
 
 
@@ -31,7 +27,7 @@
 	//   the data collection on the new command
 	//to dicate how many rows per page are shown on the grid
 	//   use the argument parameter rowsPerPage
-	var gridinstance = new WebGrid(Name, rowsPerPage: 2);
+	var gridinstance = new WebGrid(Name, rowsPerPage: 10);
 
 }
 @section head{
@@ -39,9 +35,8 @@
 }
 <div>
 	@section banner{
-		<h3>Albums of @categoryname</h3>
+		<h3>Albums of @artistName</h3>
 		<br /><br />
-		, , , 
 		FROM Albums
 
 		@gridinstance.GetHtml(
@@ -50,10 +45,10 @@
 			  firstText: "Start",
 			  lastText: "End",
 			  columns: gridinstance.Columns(
+				  gridinstance.Column(columnName: "AlbumId", header: "ID", canSort: true),
 				  gridinstance.Column(columnName: "Title", header: "Title", canSort: true),
-				  gridinstance.Column(columnName: "AlbumId", header: "AlbumId", canSort: true),
-				  gridinstance.Column(columnName: "ReleaseYear", header: "ReleaseYear", canSort: false),
-				  gridinstance.Column(columnName: "ReleaseLabel", header: "ReleaseLabel", canSort: false)
+				  gridinstance.Column(columnName: "ReleaseYear", header: "Release Year", canSort: false),
+				  gridinstance.Column(columnName: "ReleaseLabel", header: "Release Label", canSort: false)
 						));
 
 

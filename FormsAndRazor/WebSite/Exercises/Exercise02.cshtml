@@ -1,9 +1,11 @@
 ﻿@{
-	Page.Title = "DB Multi Record Query";
+	Page.Title = "Exercise 02";
 	Layout = "~/_Layout.cshtml";
 
 
 	var db = Database.Open("ChinookDB");
+	var formButton = Request.Form["formButton"];
+
 
 	var ArtistId = Request.Form["ArtistId"];
 
@@ -13,13 +15,18 @@
 				+ "FROM Artists "
 				+ "WHERE Name like @0 "
 				+ "ORDER BY Name";
-	var artid = "";
 
 
 
 	var selectresults = db.Query(querycommand, partialstring);
 
+	var artquerycommand = "SELECT ArtistId, Name "
++ "FROM Artists "
+//+ "WHERE Name like @0 "; why doesnt this work??
++ "WHERE Name like " + partialstring;
 
+	//Execution: use Query()
+	var productresults = db.Query(artquerycommand);
 
 }
 
@@ -38,41 +45,35 @@
 	{
 
 		var artName = Request.Form["ArtistId"];
-
+		var artAlbum = Request.Form["AlbumId"];
 
 		if (artName.IsEmpty())
 		{
 			<p><span style="color:firebrick">You did not enter a artist. Try again.</span></p>
 		}
+
 		else
 		{
-			querycommand = "SELECT Name "
-			+ "FROM Artists "
-			//+ "WHERE Name like @0 "; why doesnt this work??
-			+ "WHERE Name like " + partialstring;
 
-			//Execution: use Query()
-			var productresults = db.Query(querycommand);
 
 			if (productresults.Count() == 0) //cannot find an artist from the query command
 			{
-				<p><span style="color:firebrick">There are no artist named. @artName  </span></p>
-			}
+
+
+				<p><span style = "color:firebrick" > There are no artist named. @artName </span></p>
+
+
+					}
 			else
 			{
-				foreach(var thing in productresults)
-				{
-					<p>@thing[0]</p>
-				}
-				// Response.Redirect("Exercise02_B.cshtml?cid=" + artName);
-				<p>Found!</p>
-				artid = "hoedy";
-				
+				 
+				<p> Found!</p>
+
 			}
+			// ArtistId = ""; this would clean up the text input 
 		}
 
 	}
-
 	<form id="theForm" action="" method="post">
 		<div class="row">
 			<div class="col-md-3">
@@ -87,15 +88,30 @@
 			<div class="col-md-9">
 				<label id="AlbumId">Select Your Artist:&nbsp;</label><br />
 				<select style="height:25px;" name="AlbumId" id="AlbumId">
-					<option value="0">select ...</option>
+					<option value="0" name="ddalbum">select ...</option>
 
-					@foreach (var item in selectresults)
+					
+					@foreach (var item in productresults)
 					{
-						<option value="@item[0]">@item.selectresults</option>
+						if (ArtistId != null)
+						{
+							<option value="@item[0]">@item.Name</option>
+							if (formButton.Equals("fetch"))
+							{
+								ArtistId = Request.Form["ddalbum"];
+
+
+								Response.Redirect("Exercise02_B.cshtml?cid=" + @item[0]); // this send the thing away
+							}
+						}
+						else
+						{
+							// pls do nothing
+						}
 					}
 				</select><br />
 				<br />
-				<button type="submit" name="formButton" value="submit"
+				<button type="submit" name="formButton" value="fetch"
 						class="btn btn-primary">
 					Fetch Albums
 				</button>
