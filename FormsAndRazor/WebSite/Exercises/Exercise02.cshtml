@@ -5,6 +5,9 @@
 
 	var db = Database.Open("ChinookDB");
 	var formButton = Request.Form["formButton"];
+	var AlbumId = Request.Form["AlbumId"];
+
+
 
 
 	var ArtistId = Request.Form["ArtistId"];
@@ -60,17 +63,17 @@
 			{
 
 
-				<p><span style = "color:firebrick" > There are no artist named. @artName </span></p>
+				<p><span style="color:firebrick"> There are no artist named. @artName </span></p>
 
 
-					}
+			}
 			else
 			{
-				 
+
 				<p> Found!</p>
 
 			}
-			// ArtistId = ""; this would clean up the text input 
+			// ArtistId = ""; this would clean up the text input
 		}
 
 	}
@@ -88,9 +91,9 @@
 			<div class="col-md-9">
 				<label id="AlbumId">Select Your Artist:&nbsp;</label><br />
 				<select style="height:25px;" name="AlbumId" id="AlbumId">
-					<option value="0" name="ddalbum">select ...</option>
+					<option value="" >select ...</option>
 
-					
+
 					@foreach (var item in productresults)
 					{
 						if (ArtistId != null)
@@ -98,15 +101,26 @@
 							<option value="@item[0]">@item.Name</option>
 							if (formButton.Equals("fetch"))
 							{
-								ArtistId = Request.Form["ddalbum"];
+								if (AlbumId.Equals(""))
+								{
+									<p>Select something pls</p>
+								}
+								else
+								{
+									var aid = @item[0];
+									Response.Redirect("Exercise02_B.cshtml?cid=" + aid); // this send the thing away
+								}
+								//ArtistId = Request.Form["ddalbum"];
 
 
-								Response.Redirect("Exercise02_B.cshtml?cid=" + @item[0]); // this send the thing away
+
+
+
 							}
 						}
 						else
 						{
-							// pls do nothing
+
 						}
 					}
 				</select><br />
