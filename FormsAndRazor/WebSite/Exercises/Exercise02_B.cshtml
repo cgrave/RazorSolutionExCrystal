@@ -12,7 +12,7 @@
 	var querycommand = "SELECT Name FROM Artists WHERE ArtistId = @0";
 	//execution
 	//QueryValue: returns a single value
-	var categoryname = db.QueryValue(querycommand, cid);
+	var categoryname = db.Query(querycommand, cid);
 
 	//using the categoryid passed to this page, retreive the
 	//     associated product data

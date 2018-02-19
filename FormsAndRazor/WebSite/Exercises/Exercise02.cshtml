@@ -13,6 +13,8 @@
 				+ "FROM Artists "
 				+ "WHERE Name like @0 "
 				+ "ORDER BY Name";
+	var artid = "";
+
 
 
 	var selectresults = db.Query(querycommand, partialstring);
@@ -58,8 +60,14 @@
 			}
 			else
 			{
-				Response.Redirect("Exercise02_B.cshtml?cid=" + ArtistId);
-				<p>else</p>
+				foreach(var thing in productresults)
+				{
+					<p>@thing[0]</p>
+				}
+				// Response.Redirect("Exercise02_B.cshtml?cid=" + artName);
+				<p>Found!</p>
+				artid = "hoedy";
+				
 			}
 		}
 
@@ -80,6 +88,7 @@
 				<label id="AlbumId">Select Your Artist:&nbsp;</label><br />
 				<select style="height:25px;" name="AlbumId" id="AlbumId">
 					<option value="0">select ...</option>
+
 					@foreach (var item in selectresults)
 					{
 						<option value="@item[0]">@item.selectresults</option>
