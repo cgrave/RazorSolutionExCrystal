@@ -98,15 +98,17 @@
 					{
 						if (ArtistId != null)
 						{
-							<option value="@item[0]">@item.Name</option>
+							//<option value="@item[0]">@item.Name</option>
 							if (formButton.Equals("fetch"))
 							{
+								
 								if (AlbumId.Equals(""))
 								{
 									<p>Select something pls</p>
 								}
 								else
 								{
+									<option value="@item[0]">@item.Name</option>
 									var aid = @item[0];
 									Response.Redirect("Exercise02_B.cshtml?cid=" + aid); // this send the thing away
 								}
