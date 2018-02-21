@@ -1,0 +1,146 @@
+﻿@{
+	Page.Title = "Exercise 03";
+	Layout = "~/_Layout.cshtml";
+
+	var db = Database.Open("ChinookDB");
+	var Title = "";
+	var ReleaseYear = "0";
+	var ArtistId = "0";
+	var ReleaseLabel = "";
+	var formbutton = Request.Form["formButton"];
+	var querycommand = "SELECT ArtistId, Name "
+	+ "FROM Artists "
+	+ "ORDER BY Name";
+	var artistresults = db.Query(querycommand);
+
+
+	Validation.Add("Title",
+	Validator.Required("Album Title is a required field."),
+	Validator.StringLength(160, 1, "Album Title is limited to 160 characters."));
+
+	Validation.Add("ArtistId",
+	Validator.Required("Artist is a required field."),
+	Validator.Integer("Artist Id is a required field."));
+
+	Validation.Add("ReleaseYear",
+	Validator.Required("Album Year is a required field."),
+	// have the number set up in forms Validator.Integer("Album Year is a required field."),
+	Validator.Range(1950, 2018, "Album Title is out of range 1950 to today."));
+
+	Validation.Add("ReleaseLabel",
+	// not required Validator.Required("Release Label is a required field."),
+	Validator.StringLength(50, 1, "Album Title is limited to 50 characters."));
+
+}
+@section head
+{
+
+}
+<div>
+	@section banner
+	{
+		<h2>Exercise 03</h2>
+
+		@*<div class="alert alert-info">
+				<blockquote class="well">
+
+				</blockquote>
+			</div>*@
+	}
+
+	@if (IsPost)
+	{
+		if (formbutton.Equals("Clear"))
+		{
+			<p class="alert alert-info text-center">
+				Usered cleared
+			</p>
+		}
+		else
+		{
+			Title = Request.Form["Title"];
+			ArtistId = Request.Form["ArtistId"];
+			ReleaseYear = Request.Form["ReleaseYear"];
+			ReleaseLabel = Request.Form["ReleaseLabel"];
+
+			if (Validation.IsValid())
+			{
+				if (ArtistId.Equals("0"))
+				{
+					<p class="alert alert-danger text-center">
+						You must select a supplier
+					</p>
+				}
+				else if (ReleaseYear.Equals("0"))
+				{
+				}
+				else
+				{
+					//data passes form
+					try
+					{
+						//connections
+						//command
+						var command = "INSERT INTO Albums (Title, ArtistId, ReleaseYear, ReleaseLabel) "
+									+ "VALUES(@0, @1, @2, @3)";
+						// execution
+						db.Execute(command, Title,
+							ArtistId.Equals("0") ? null : ArtistId,
+							ReleaseYear.Equals("0") ? null : ReleaseYear,
+							string.IsNullOrEmpty(ReleaseLabel) ? null : ReleaseLabel
+							);
+						<p class="alert alert-success text-center">
+							Product Added
+						</p>
+					}
+					catch (Exception ex)
+					{
+						<p class="alert alert-danger text-center">
+							@ex.Message
+						</p>
+					}
+				}
+			}// if valid
+			else
+			{
+				<p>WRONG</p>
+			}
+
+		}
+	}
+	<span style="color:firebrick">
+		@Html.ValidationSummary()
+	</span>
+	<form id="theForm" method="post" action="">
+		<div class="row">
+			<div class="col-md-5">
+				<label for="AlbumTitle">Title:&nbsp;</label>
+				<input type="text" id="Title" name="Title" value="@Title" />
+				<br />
+				<label for="ArtistId">Artist:&nbsp;</label>
+				<select name="ArtistId" id="ArtistId">
+					<option value="">select...</option>
+					@foreach (var item in artistresults)
+					{
+						<option value="@item[0]">@item.Name</option>
+					}
+				</select>
+				<br />
+				<label for="ReleaseYear">Year:&nbsp;</label>
+				<input type="number" id="ReleaseYear" name="ReleaseYear" value="@ReleaseYear" />
+				<br />
+				<label for="ReleaseLabel">Label:&nbsp;</label>
+				<input type="text" id="ReleaseLabel" name="ReleaseLabel" value="@ReleaseLabel" />
+				<br /><br />
+				<button type="submit" name="formButton" value="Add" class="btn btn-primary">Add</button>
+				<button type="submit" name="formButton" value="Clear" class="btn btn-secondary">Clear</button>
+			</div>
+		</div>
+	</form>
+
+	@section footer
+	{
+
+	}
+
+</div>
