@@ -1,35 +1,38 @@
-﻿@{
-	Page.Title = "Exercise 02";
-	Layout = "~/_Layout.cshtml";
+@{
+    Page.Title = "Exercise 02";
+    Layout = "~/_Layout.cshtml";
 
 
-	var db = Database.Open("ChinookDB");
-	var formButton = Request.Form["formButton"];
-	var AlbumId = Request.Form["AlbumId"];
-
-
-
-
-	var ArtistId = Request.Form["ArtistId"];
-
-	var partialstring = "\'%" + ArtistId + "%\'";
-
-	var querycommand = "SELECT ArtistId, Name "
-				+ "FROM Artists "
-				+ "WHERE Name like @0 "
-				+ "ORDER BY Name";
+    var db = Database.Open("ChinookDB");
+    var formButton = Request.Form["formButton"];
+    var AlbumId = Request.Form["AlbumId"];
 
 
 
-	var selectresults = db.Query(querycommand, partialstring);
 
-	var artquerycommand = "SELECT ArtistId, Name "
-+ "FROM Artists "
-//+ "WHERE Name like @0 "; why doesnt this work??
-+ "WHERE Name like " + partialstring;
+    var ArtistId = Request.Form["ArtistId"];
 
-	//Execution: use Query()
-	var productresults = db.Query(artquerycommand);
+    var partialstring = "%" + ArtistId + "%";
+    if(partialstring.Equals("%%"))
+    {
+        partialstring = "%xys%";
+    } //this fixes it the partial string bug and
+
+    var querycommand = "SELECT ArtistId, Name "
+                + "FROM Artists "
+                + "WHERE Name like @0 "
+                + "ORDER BY Name";
+
+
+
+    var selectresults = db.Query(querycommand, partialstring);
+
+    var artquerycommand = "SELECT ArtistId, Name "
+                + "FROM Artists "
+                + "WHERE Name like @0 "; //why doesnt this work??
+
+    //Execution: use Query()
+    var productresults = db.Query(artquerycommand, partialstring);
 
 }
 
@@ -98,33 +101,27 @@
 					{
 						if (ArtistId != null)
 						{
-							//<option value="@item[0]">@item.Name</option>
+							<option value="@item[0]">@item.Name</option>
 							if (formButton.Equals("fetch"))
 							{
-								
 								if (AlbumId.Equals(""))
 								{
 									<p>Select something pls</p>
-								}
-								else
-								{
-									<option value="@item[0]">@item.Name</option>
-									var aid = @item[0];
-									Response.Redirect("Exercise02_B.cshtml?cid=" + aid); // this send the thing away
-								}
-								//ArtistId = Request.Form["ddalbum"];
+                                }
+                                else
+                                {
+                                    var aid = @item[0];
+                                    //<option value="@item[0]">@item.Name</option>// doesnt display anything?
 
-
-
-
-
-							}
-						}
-						else
-						{
-
-						}
-					}
+                                    Response.Redirect("Exercise02_B.cshtml?cid=" + aid); // this send the thing away
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //nothing happens
+                        }
+                    }
 				</select><br />
 				<br />
 				<button type="submit" name="formButton" value="fetch"
