@@ -1,0 +1,98 @@
+﻿@{
+	Page.Title = "Exercise 04 - Edit Info";
+	Layout = "~/_Layout.cshtml";
+
+	var db = Database.Open("ChinookDB");
+	var cid = Request.QueryString["cid"];
+	if (string.IsNullOrEmpty(cid))
+	{
+		Response.Redirect("index.cshtml");
+	}
+	var querycommand = "SELECT Title FROM Albums WHERE AlbumId = @0";
+	var AlbumTitle = db.QueryValue(querycommand, cid).ToString();
+
+	querycommand = "SELECT ArtistId FROM Albums WHERE AlbumId = @0";
+	var ArtistId = db.QueryValue(querycommand, cid).ToString();
+	querycommand = "SELECT Name from Artists WHERE ArtistId = @0";
+	var artName = db.QueryValue(querycommand, ArtistId).ToString();
+
+
+	querycommand = "SELECT ReleaseYear FROM Albums WHERE AlbumId = @0";
+	var ReleaseYear = db.QueryValue(querycommand, cid).ToString();
+
+	querycommand = "SELECT ReleaseLabel FROM Albums WHERE AlbumId = @0";
+	var ReleaseLabel = db.QueryValue(querycommand, cid).ToString();
+
+	querycommand = "SELECT AlbumId FROM Albums WHERE AlbumId = @0";
+	var AlbumId = db.QueryValue(querycommand, cid).ToString();
+
+	querycommand = "SELECT ArtistId, AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE AlbumId = @0 "
++ "ORDER BY Title";
+	var Name = db.Query(querycommand, cid);
+
+
+	var updatecommand = "UPDATE Albums "
+		+ "SET Title = @0, "
+		+ "ArtistId = @1, "
+		+ "ReleaseYear = @2, "
+		+ "ReleaseLabel = @3 "
+		+ "WHERE AlbumId = @4";
+
+}
+@section head
+{
+	<br /><br />
+	<h2>@artName - @AlbumTitle</h2>
+}
+<div>
+	@section banner
+	{
+		<h2>Exercise 04</h2>
+	}
+
+
+	<form id="theForm" action="" method="post">
+		<div class="row">
+			<div class="col-md-5 text-right">
+				<label for="AlbumTitle">Title:&nbsp;</label>
+				<input type="text" id="Title" name="Title" value="@AlbumTitle" />
+				<br />
+
+				<label for="ArtistId">ArtistId:&nbsp;</label>
+				<input type="text" id="ArtistId" name="ArtistId" value="@ArtistId" />
+				<br />
+				<label for="artName">artName:&nbsp;</label>
+				<input type="text" id="artName" name="artName" value="@artName" />
+				<br />
+
+				<label for="ReleaseYear">ReleaseYear:&nbsp;</label>
+				<input type="text" id="ReleaseYear" name="ReleaseYear" value="@ReleaseYear" />
+				<br />
+
+				<label for="ReleaseLabel">ReleaseLabel:&nbsp;</label>
+				<input type="text" id="ReleaseLabel" name="ReleaseLabel" value="@ReleaseLabel" />
+				<br />
+
+				<label for="AlbumId">AlbumId:&nbsp;</label>
+				<input type="text" id="AlbumId" name="AlbumId" value="@AlbumId" />
+				<br /><br />
+
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-md-5 text-right">
+				<button type="submit" name="theButton" id="theUpdate" class="btn btn-primary" value="update">Update</button>&nbsp;&nbsp;&nbsp;
+				<button type="submit" name="theButton" id="theDelete" class="btn btn-primary" value="delete" formnovalidate>Delete</button>&nbsp;&nbsp;&nbsp;
+				<button type="submit" name="theButton" id="theCancel" class="btn btn-primary" value="cancel" formnovalidate>Cancel</button>
+			</div>
+		</div>
+
+	</form>
+
+	@section footer
+	{
+
+	}
+
+</div>

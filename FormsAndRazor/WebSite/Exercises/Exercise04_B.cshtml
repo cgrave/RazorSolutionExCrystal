@@ -1,0 +1,59 @@
+﻿@{
+	Page.Title = "Exercise 04 Search Results";
+	Layout = "~/_Layout.cshtml";
+	var cid = Request.QueryString["cid"];
+
+	if (string.IsNullOrEmpty(cid))
+	{
+		Response.Redirect("Exercise02.cshtml");
+	}
+	var db = Database.Open("ChinookDB");
+
+	var querycommand = "SELECT Name FROM Artists WHERE ArtistId = @0";
+	var artistName = db.QueryValue(querycommand, cid).ToString(); // gets name
+
+	//using the categoryid passed to this page, retreive the
+	//     associated product data
+	querycommand = "SELECT AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE ArtistId = @0 "
+					+ "ORDER BY Title";
+
+
+	//execution
+	//Query() : 0,1 or more rows
+	var Name = db.Query(querycommand, cid);
+
+	//WebGrid is a object
+	//When you create an instance of WebGrid, you must pass
+	//   the data collection on the new command
+	//to dicate how many rows per page are shown on the grid
+	//   use the argument parameter rowsPerPage
+	var gridinstance = new WebGrid(Name, rowsPerPage: 10);
+
+}
+@section head{
+
+}
+<div>
+	@section banner{
+		<h3>Albums of @artistName</h3>
+		<br /><br />
+
+		@gridinstance.GetHtml(
+				   tableStyle: "table table-bordered table-striped table-hover",
+				   mode: WebGridPagerModes.All,
+				   firstText: "Start",
+				   lastText: "End",
+				   columns: gridinstance.Columns(
+					   gridinstance.Column(columnName: "AlbumId", header: "ID", canSort: true),
+					   gridinstance.Column(columnName: "Title", header: "Title", canSort: true),
+					   gridinstance.Column(columnName: "ReleaseYear", header: "Release Year", canSort: false),
+					   gridinstance.Column(columnName: "ReleaseLabel", header: "Release Label", canSort: false),
+					   gridinstance.Column(header:"", format:@<text><a href="~/Exercises/Exercise04_C.cshtml?cid=@item.AlbumId">Edit</a></text>)
+                        ));
+
+
+	}
+	@section footer{
+
+	}
+</div>

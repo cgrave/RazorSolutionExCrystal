@@ -4,7 +4,7 @@
 
 	var db = Database.Open("ChinookDB");
 	var Title = "";
-	var ReleaseYear = "0";
+	var ReleaseYear = "";
 	var ArtistId = "0";
 	var ReleaseLabel = "";
 	var formbutton = Request.Form["formButton"];
@@ -113,11 +113,16 @@
 	</span>
 	<form id="theForm" method="post" action="">
 		<div class="row">
-			<div class="col-md-5">
-				<label for="AlbumTitle">Title:&nbsp;</label>
-				<input type="text" id="Title" name="Title" value="@Title" />
+			<div class="col-md-5 text-right">
+				<label for="AlbumTitle">Title:&nbsp;</label><br />
+				<label for="ArtistId">Artist:&nbsp;</label><br />
+				<label for="ReleaseYear">Year:&nbsp;</label><br />
+				<label for="ReleaseLabel">Label:&nbsp;</label><br />
+				
 				<br />
-				<label for="ArtistId">Artist:&nbsp;</label>
+			</div>
+			<div class="col-md-5">
+				<input type="text" id="Title" name="Title" value="@Title" />
 				<select name="ArtistId" id="ArtistId">
 					<option value="">select...</option>
 					@foreach (var item in artistresults)
@@ -126,10 +131,10 @@
 					}
 				</select>
 				<br />
-				<label for="ReleaseYear">Year:&nbsp;</label>
-				<input type="number" id="ReleaseYear" name="ReleaseYear" value="@ReleaseYear" />
+				
+				<input type="text" id="ReleaseYear" name="ReleaseYear" value="@ReleaseYear" />
 				<br />
-				<label for="ReleaseLabel">Label:&nbsp;</label>
+				
 				<input type="text" id="ReleaseLabel" name="ReleaseLabel" value="@ReleaseLabel" />
 				<br /><br />
 				<button type="submit" name="formButton" value="Add" class="btn btn-primary">Add</button>

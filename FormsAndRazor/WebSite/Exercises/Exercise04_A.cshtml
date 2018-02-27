@@ -1,59 +1,142 @@
 ﻿@{
-	Page.Title = "Exercise 03";
+	Page.Title = "Exercise 04 Search";
 	Layout = "~/_Layout.cshtml";
 
+
 	var db = Database.Open("ChinookDB");
-	var Title = "";
-	var ReleaseYear = "";
-	var ReleaseLabel = "";
-	//var querycommand = "SELECT AlbumId, Title, ArtistId, ReleaseYear, ReleaseLabel "
-	//					+ "FROM Albums "
-	//					+ "WHERE AlbumId = @0";
-	//var artistresults = db.Query(querycommand, );
+	var formButton = Request.Form["formButton"];
+	var AlbumId = Request.Form["AlbumId"];
+
+
+
+
+	var ArtistId = Request.Form["ArtistId"];
+
+	var partialstring = "%" + ArtistId + "%";
+	if (partialstring.Equals("%%"))
+	{
+		partialstring = "%xys%";
+	} //this fixes it the partial string bug and
+
+	var querycommand = "SELECT ArtistId, Name "
+				+ "FROM Artists "
+				+ "WHERE Name like @0 "
+				+ "ORDER BY Name";
+
+
+
+	var selectresults = db.Query(querycommand, partialstring);
+
+	var artquerycommand = "SELECT ArtistId, Name "
+				+ "FROM Artists "
+				+ "WHERE Name like @0 "; //why doesnt this work??
+
+	//Execution: use Query()
+	var productresults = db.Query(artquerycommand, partialstring);
 
 }
+
 @section head
 {
-
+	<!-- put in a link to a custom .css file-->
+	<link href="~/Content/MyCSS.css" rel="stylesheet" />
 }
 <div>
 	@section banner
-	{
-		<h2>Exercise 03</h2>
+{
+		<h2>Exercise 02</h2>
 	}
 
+	@if (IsPost)
+	{
 
+		var artName = Request.Form["ArtistId"];
+		var artAlbum = Request.Form["AlbumId"];
+
+		if (artName.IsEmpty())
+		{
+			<p><span style="color:firebrick">You did not enter a artist. Try again.</span></p>
+		}
+
+		else
+		{
+
+
+			if (productresults.Count() == 0) //cannot find an artist from the query command
+			{
+
+
+				<p><span style="color:firebrick"> There are no artist named. @artName </span></p>
+
+
+			}
+			else
+			{
+
+				<p> Found!</p>
+
+			}
+			// ArtistId = ""; this would clean up the text input
+		}
+
+	}
 	<form id="theForm" action="" method="post">
 		<div class="row">
-			<div class="col-md-5">
-				<label for="AlbumTitle">Title:&nbsp;</label>
-				<input type="text" id="Title" name="Title" value="@Title" />
+			<div class="col-md-3">
+				<label id="ArtistId">Enter Artist Name:&nbsp;</label><br />
+				<input id="ArtistId" name="ArtistId" value="@ArtistId" type="text" /><br />
 				<br />
-				<label for="ArtistId">Artist:&nbsp;</label>
-				<select name="ArtistId" id="ArtistId">
-				<option value="">select...</option>
-				@*@foreach (var item in artistresults)
-				{
-				<option value="@item[0]">@item.Name</option>
-				}*@
-				</select>
+				<button type="submit" name="formButton" value="submit"
+						class="btn btn-primary">
+					Fetch Artists
+				</button>
+			</div>
+			<div class="col-md-9">
+				<label id="AlbumId">Select Your Artist:&nbsp;</label><br />
+				<select style="height:25px;" name="AlbumId" id="AlbumId">
+					<option value="">select ...</option>
+
+
+					@foreach (var item in productresults)
+					{
+						if (ArtistId != null)
+						{
+							<option value="@item[0]">@item.Name</option>
+							if (formButton.Equals("fetch"))
+							{
+								if (AlbumId.Equals(""))
+								{
+									<p>Select something pls</p>
+								}
+								else
+								{
+									var aid = @item[0];
+									//<option value="@item[0]">@item.Name</option>// doesnt display anything?
+
+									Response.Redirect("Exercise04_B.cshtml?cid=" + aid); // this send the thing away
+								}
+							}
+						}
+						else
+						{
+							//nothing happens
+						}
+					}
+				</select><br />
 				<br />
-				<label for="ReleaseYear">Year:&nbsp;</label>
-				<input type="number" id="ReleaseYear" name="ReleaseYear" value="@ReleaseYear" />
-				<br />
-				<label for="ReleaseLabel">Label:&nbsp;</label>
-				<input type="text" id="ReleaseLabel" name="ReleaseLabel" value="@ReleaseLabel" />
-				<br /><br />
-				<button type="submit" name="formButton" value="Add" class="btn btn-primary">Add</button>
-				<button type="submit" name="formButton" value="Clear" class="btn btn-secondary">Clear</button>
+				<button type="submit" name="formButton" value="fetch"
+						class="btn btn-primary">
+					Fetch Albums
+				</button>
 			</div>
 		</div>
-
 	</form>
 
+
 	@section footer
-	{
-
-	}
-
+{
+		<p>
+			&copy; CPSC1517, Nait Today's date is
+			@DateTime.Today.ToLongDateString().
+		</p>}
 </div>
