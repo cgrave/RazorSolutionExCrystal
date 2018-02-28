@@ -2,19 +2,15 @@
 	Page.Title = "Exercise 04 - Edit Info";
 	Layout = "~/_Layout.cshtml";
 
-	var ArtistId = 0;
-
 	var db = Database.Open("ChinookDB");
 	var cid = Request.QueryString["cid"];
 	//capture which button was pressed
 	var AlbumTitle = Request.Form["AlbumTitle"];
-	ArtistId = Request.Form["ArtistId"];
+	var ArtistId = Request.Form["ArtistId"];
 	var artName = Request.Form["artName"];
 	var ReleaseYear = Request.Form["ReleaseYear"];
 	var ReleaseLabel = Request.Form["ReleaseLabel"];
 	var AlbumId = Request.Form["AlbumId"];
-
-	var discontinued = Request.Form["Discontinued"];
 
 	var thebutton = Request.Form["theButton"];
 	var queryStatement = "SELECT AlbumId, Title, ArtistId, ReleaseYear, ReleaseLabel "
@@ -47,19 +43,26 @@
 	}
 	@if (IsPost)
 	{
+
+
 		if (thebutton.Equals("cancel"))
 		{
-			ArtistId = 0;
-			AlbumId = "";
+			// cancel/clears
+			//a)could redirect to search page
+			//b)reset data to the current record for productid
+			//c)empty the data fields.
+			//for b and c you should also supply a message to the user
+			AlbumId = ""; //as a minimum
 			AlbumTitle = "";
+			ArtistId = "";
+			//artName = "";
 			ReleaseYear = "";
 			ReleaseLabel = "";
-
 			<p>
 				<span style="color:blue">
 					User has cancel the action. Return to search for another product
 				</span>
-				<a href="~/Exercises/Exercise04_C.cshtml">go to search...</a>
+				<a href="~/Exercises/Exercise04_A.cshtml">go to search...</a>
 			</p>
 		}
 		else if (thebutton.Equals("delete"))
@@ -77,7 +80,7 @@
 					<span style="color:blue">
 						No product selected. Return to search for another product
 					</span>
-					<a href="~/DBPages/ProductSearch.cshtml">go to search...</a>
+					<a href="~/Exercises/Exercise04_A.cshtml">go to search...</a>
 				</p>
 			}
 			else
@@ -87,8 +90,9 @@
 					//to physically remove the record from the database
 					//var deletecommand = "DELETE Products WHERE ProductID = @0";
 
-					var deletecommand = "DELETE Albums "
-										+ "WHERE AlbumId = @0";
+					//to flag a record to be ignore (deleted) do an update
+					var deletecommand = "DELETE Albums WHERE AlbumId = @0";
+
 
 					int results = db.Execute(deletecommand, AlbumId);
 					if (results > 0)
@@ -99,8 +103,12 @@
 							</span>
 						</p>
 						//optionally clear the fields.
-						AlbumTitle = ""; //as a minimum
-						//discontinued = "1";
+						AlbumId = ""; //as a minimum
+						AlbumTitle = "";
+						ArtistId = "";
+						//artName = "";
+						ReleaseYear = "";
+						ReleaseLabel = "";
 					}
 					else
 					{
@@ -125,22 +133,14 @@
 		}
 		else
 		{
-			//check is there a productid to update
-			//if not message to use to get new product
-			//if present
-			//  cause validations
-			//  if valid
-			//      create delete command
-			//      execute
-			//      message
-			//      wrap in try/catch
+			//make connection
 			if (string.IsNullOrEmpty(AlbumId))
 			{
 				<p>
 					<span style="color:blue">
 						No product selected. Return to search for another product
 					</span>
-					<a href="~/Exercises/Exercise04_C.cshtml">go to search...</a>
+					<a href="~/Exercises/Exercise04_A.cshtml">go to search...</a>
 				</p>
 			}
 			else
@@ -149,19 +149,22 @@
 				{
 					try
 					{
-						var updatecommmand = "UPDATE Albums SET Title = @0 "
-											+ "ArtistId = @1, "
-											+ "ReleaseYear = @2, "
-											+ "ReleaseLabel = @3, "
-											+ "WHERE AlbumId = @4";
-						//the placeholders expect a value not to be confused
-						// with a character string
-						//the null (as a value) is NOT equal to "null" which is a string
-						int results = db.Execute(updatecommmand,
-							string.IsNullOrEmpty(AlbumTitle) ? null : AlbumTitle,
-							ArtistId,
+						//update
+						var updatecommand = "UPDATE Albums "
+									+ "SET Title = @0, "
+									+ "ArtistId = @1, "
+									+ "ReleaseYear = @2, "
+									+ "ReleaseLabel = @3 "
+									+ "WHERE AlbumId = @4";
+
+
+						//this isnt working because ints and strings? i need to figure out how to pass these arguments to fit in the parameters
+						int results = db.Execute(updatecommand, AlbumTitle,
+							ArtistId == "0" ? null : ArtistId,
+							string.IsNullOrEmpty(artName) ? null : artName,
 							string.IsNullOrEmpty(ReleaseYear) ? null : ReleaseYear,
-							string.IsNullOrEmpty(ReleaseLabel) ? null : ReleaseLabel, AlbumId);
+							string.IsNullOrEmpty(ReleaseLabel) ? null : ReleaseLabel,
+							AlbumId == "0" ? null : AlbumId);
 						if (results > 0)
 						{
 							<p>
@@ -183,7 +186,7 @@
 					{
 						<p>
 							<span style="color:blue">
-								Update failed. Error @ex.Message
+								Deleted failed. Error @ex.Message
 							</span>
 
 						</p>
@@ -192,23 +195,43 @@
 			}
 		}
 	}
-	else //for IsPost
-	{
-		//if this page is being shown for the "first time"
+	else
+	{   // this is where i put the stuff before button searchings
 		queryProducts = db.QuerySingle(queryStatement, cid);
+		//	var querycommand = "SELECT Title FROM Albums WHERE AlbumId = @0";
+		//	AlbumTitle = db.QueryValue(querycommand, cid).ToString();
 
-		AlbumId = queryProducts.AlbumId.ToString();
-		AlbumTitle = queryProducts.Title.ToString();
-		ArtistId = queryProducts.ArtistId;
+		//	querycommand = "SELECT ArtistId FROM Albums WHERE AlbumId = @0";
+		//	ArtistId = db.QueryValue(querycommand, cid).ToString();
+		//	querycommand = "SELECT Name from Artists WHERE ArtistId = @0";
+		//	artName = db.QueryValue(querycommand, ArtistId).ToString();
+
+
+		//	querycommand = "SELECT ReleaseYear FROM Albums WHERE AlbumId = @0";
+		//	ReleaseYear = db.QueryValue(querycommand, cid).ToString();
+
+		//	querycommand = "SELECT ReleaseLabel FROM Albums WHERE AlbumId = @0";
+		//	ReleaseLabel = db.QueryValue(querycommand, cid).ToString();
+
+		//	querycommand = "SELECT AlbumId FROM Albums WHERE AlbumId = @0";
+		//	AlbumId = db.QueryValue(querycommand, cid).ToString();
+
+		//	querycommand = "SELECT ArtistId, AlbumId, Title, ReleaseYear, ReleaseLabel FROM Albums WHERE AlbumId = @0 "
+		//+ "ORDER BY Title";
+		AlbumTitle = queryProducts.Title == null ? "" : queryProducts.Title.ToString();
+
+		ArtistId = queryProducts.ArtistId.ToString();
+		ReleaseLabel = queryProducts.ReleaseLabel;
 		ReleaseYear = queryProducts.ReleaseYear == null ? "0" : queryProducts.ReleaseYear.ToString();
-		ReleaseLabel = queryProducts.ReleaseLabel == null ? "" : queryProducts.ReleaseLabel.ToString();//from sql 0/1
+		AlbumId = queryProducts.AlbumId == null ? "0" : queryProducts.AlbumId.ToString();
+		//var Name = db.Query(querycommand, cid);
 	}
 
 	<form id="theForm" action="" method="post">
 		<div class="row">
 			<div class="col-md-5 text-right">
 				<label for="AlbumTitle">Title:&nbsp;</label>
-				<input type="text" id="AlbumTitle" name="AlbumTitle" value="@AlbumTitle" />
+				<input type="text" id="Title" name="Title" value="@AlbumTitle" />
 				<br />
 
 				<label for="ArtistId">ArtistId:&nbsp;</label>
@@ -229,14 +252,7 @@
 				<label for="AlbumId">AlbumId:&nbsp;</label>
 				<input type="text" id="AlbumId" name="AlbumId" value="@AlbumId" />
 				<br /><br />
-				@*@if (discontinued.Equals("True") || (discontinued == "1"))
-				{
-					<input type="checkbox" name="Discontinued" checked value="1" /><br /><br />
-				}
-				else
-				{
-					<input type="checkbox" name="Discontinued" value="0" /><br /><br />
-				}*@
+
 			</div>
 
 		</div>
