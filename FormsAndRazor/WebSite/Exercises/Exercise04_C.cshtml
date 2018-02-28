@@ -2,13 +2,13 @@
 	Page.Title = "Exercise 04 - Edit Info";
 	Layout = "~/_Layout.cshtml";
 
-	var ArtistId = 0;
+	//var ArtistId = 0;
 
 	var db = Database.Open("ChinookDB");
 	var cid = Request.QueryString["cid"];
 	//capture which button was pressed
 	var AlbumTitle = Request.Form["AlbumTitle"];
-	ArtistId = Request.Form["ArtistId"];
+	var ArtistId = Request.Form["ArtistId"];
 	var artName = Request.Form["artName"];
 	var ReleaseYear = Request.Form["ReleaseYear"];
 	var ReleaseLabel = Request.Form["ReleaseLabel"];
@@ -49,7 +49,7 @@
 	{
 		if (thebutton.Equals("cancel"))
 		{
-			ArtistId = 0;
+			ArtistId = "";
 			AlbumId = "";
 			AlbumTitle = "";
 			ReleaseYear = "";
@@ -159,7 +159,8 @@
 						//the null (as a value) is NOT equal to "null" which is a string
 						int results = db.Execute(updatecommmand,
 							string.IsNullOrEmpty(AlbumTitle) ? null : AlbumTitle,
-							ArtistId,
+							//ArtistId,
+							string.IsNullOrEmpty(ArtistId) ? null : ArtistId,
 							string.IsNullOrEmpty(ReleaseYear) ? null : ReleaseYear,
 							string.IsNullOrEmpty(ReleaseLabel) ? null : ReleaseLabel, AlbumId);
 						if (results > 0)
@@ -212,7 +213,7 @@
 				<br />
 
 				<label for="ArtistId">ArtistId:&nbsp;</label>
-				<input type="text" id="ArtistId" name="ArtistId" value="@ArtistId" />
+				<input type="number" id="ArtistId" name="ArtistId" value="@ArtistId" />
 				<br />
 				@*<label for="artName">artName:&nbsp;</label>
 					<input type="text" id="artName" name="artName" value="@artName" />
