@@ -197,12 +197,11 @@
 	{
 		//if this page is being shown for the "first time"
 		queryProducts = db.QuerySingle(queryStatement, cid);
-
-		AlbumId = queryProducts.AlbumId.ToString();
 		AlbumTitle = queryProducts.Title.ToString();
-		ArtistId = queryProducts.ArtistId;
+		ArtistId = queryProducts.ArtistId.ToString();
 		ReleaseYear = queryProducts.ReleaseYear == null ? "0" : queryProducts.ReleaseYear.ToString();
 		ReleaseLabel = queryProducts.ReleaseLabel == null ? "" : queryProducts.ReleaseLabel.ToString();//from sql 0/1
+		AlbumId = queryProducts.AlbumId.ToString();
 	}
 
 	<form id="theForm" action="" method="post">
@@ -213,7 +212,7 @@
 				<br />
 
 				<label for="ArtistId">ArtistId:&nbsp;</label>
-				<input type="number" id="ArtistId" name="ArtistId" value="@ArtistId" />
+				<input type="text" id="ArtistId" name="ArtistId" value="@ArtistId" />
 				<br />
 				@*<label for="artName">artName:&nbsp;</label>
 					<input type="text" id="artName" name="artName" value="@artName" />
