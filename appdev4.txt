@@ -1,0 +1,23 @@
+variables for filling out the forms
+open database
+request forms -- new variables name perhaps?
+(what do i do with my own variables)
+
+if ISPOST
+  
+	  
+	if delete button pressed -- empty the inputs & execute the query command thing
+	else if the clear buton is pressed -- empty the inputs and show link out
+	(when buttons are  pressed) -- pass the querycommand
+		validation of inputs
+
+else for ISPOST
+	for page that is being shown the first time
+@@	this is where i would put in my variables to fill out inputs
+
+
+forms
+
+buttons
+
+javascript thing
